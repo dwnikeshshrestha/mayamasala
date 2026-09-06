@@ -1,0 +1,142 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Design tokens — the whole brand lives here.
+   Change a value below and it propagates through every component.
+------------------------------------------------------------------ */
+@theme {
+  /* Surfaces — warm paper, not clinical white */
+  --color-paper: #fbf9f5;
+  --color-sand: #f3ede3;
+  --color-shell: #ece3d5;
+
+  /* Ink */
+  --color-ink: #1a1512;
+  --color-ink-70: #4c4139;
+  --color-ink-45: #7d7167;
+
+  /* Hairlines */
+  --color-line: #e2d8c9;
+  --color-line-strong: #cdbfab;
+
+  /* Accents — pulled from the spices themselves */
+  --color-saffron: #c8781c;
+  --color-chili: #9b2c1e;
+  --color-clove: #3e2a20;
+  --color-leaf: #4c5d3c;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --tracking-eyebrow: 0.18em;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-weight: 350;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Fraunces reads best a touch soft and optically sized for display use */
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+  }
+
+  ::selection {
+    background: var(--color-saffron);
+    color: var(--color-paper);
+  }
+
+  /* Visible, on-brand focus — never remove the ring, restyle it */
+  :focus-visible {
+    outline: 2px solid var(--color-saffron);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  /* Editorial eyebrow label used above every section heading */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: var(--tracking-eyebrow);
+    text-transform: uppercase;
+    color: var(--color-ink-45);
+  }
+
+  /* Paper grain — keeps large flat areas from looking like dead pixels */
+  .grain::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .rule {
+    border-top: 1px solid var(--color-line);
+  }
+}
+
+/* Scroll-reveal — opt-in via the <Reveal> component */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.animate-marquee {
+  animation: marquee 38s linear infinite;
+}
