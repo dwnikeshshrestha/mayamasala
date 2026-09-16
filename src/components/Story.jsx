@@ -43,8 +43,8 @@ export default function Story() {
             {story.image ? (
               <img
                 src={story.image}
-                alt="Whole spices sorted into a traditional stainless steel spice box"
-                className="aspect-4/5 w-full rounded-[2px] border border-line object-cover object-left"
+                alt="A bowl of homemade dry fruit mix"
+                className="aspect-4/5 w-full rounded-[2px] border border-line object-cover"
                 loading="lazy"
               />
             ) : (
@@ -60,8 +60,8 @@ export default function Story() {
             <figcaption className="mt-4 flex items-baseline gap-3 text-[0.8125rem] text-ink-45">
               <span className="h-px w-6 bg-line-strong" aria-hidden="true" />
               {story.image
-                ? 'Whole spices, sorted before roasting.'
-                : 'Four of the six blends we grind every week.'}
+                ? 'Roasted nuts and dried fruit, mixed by hand.'
+                : 'A few of the recipes we make every week.'}
             </figcaption>
           </figure>
         </Reveal>

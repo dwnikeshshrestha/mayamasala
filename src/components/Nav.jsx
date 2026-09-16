@@ -35,18 +35,14 @@ export default function Nav() {
       </a>
 
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+        className={`sticky top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'border-b border-line bg-paper/85 backdrop-blur-md'
-            : 'border-b border-transparent'
+            ? 'border-b border-line bg-paper/90 backdrop-blur-md'
+            : 'border-b border-transparent bg-paper'
         }`}
       >
-        <Container className="flex h-[72px] items-center justify-between gap-6">
-          <a href="#top" className="flex items-center gap-3" aria-label={`${brand.name} — home`}>
-            <Logo height={30} />
-          </a>
-
-          <nav aria-label="Primary" className="hidden items-center gap-9 md:flex">
+        <Container className="grid h-[76px] grid-cols-2 items-center gap-6 md:grid-cols-3">
+          <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
             {nav.map((item) => (
               <a
                 key={item.href}
@@ -58,7 +54,15 @@ export default function Nav() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-3">
+          <a
+            href="#top"
+            className="flex items-center justify-center gap-3 md:justify-self-center"
+            aria-label={`${brand.name} — home`}
+          >
+            <Logo height={30} />
+          </a>
+
+          <div className="flex items-center justify-end gap-3">
             <Button
               href={waHref}
               target="_blank"

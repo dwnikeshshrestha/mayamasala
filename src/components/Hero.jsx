@@ -1,106 +1,138 @@
-import Reveal from './Reveal'
-import { Container, Button, SpiceSwatch, WhatsAppIcon, ArrowIcon, waHref } from './Primitives'
-import { hero, brand, products } from '../content/site'
+import { useEffect, useRef, useState } from 'react'
+import { Container, Button, WhatsAppIcon, ArrowIcon, waHref } from './Primitives'
+import { heroSlides, brand } from '../content/site'
+
+const AUTOPLAY_MS = 5500
 
 export default function Hero() {
+  const [index, setIndex] = useState(0)
+  const timer = useRef(null)
+
+  useEffect(() => {
+    const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+    timer.current = window.setInterval(() => {
+      setIndex((i) => (i + 1) % heroSlides.length)
+    }, AUTOPLAY_MS)
+    return () => window.clearInterval(timer.current)
+  }, [])
+
+  function goTo(i) {
+    window.clearInterval(timer.current)
+    setIndex(i)
+  }
+
+  const slide = heroSlides[index]
+
   return (
-    <section id="top" className="relative overflow-hidden pt-[72px]">
-      {/* A very soft warm wash behind the headline, so the paper is not flat */}
+    <section
+      id="top"
+      className="relative isolate overflow-hidden"
+      style={{
+        background:
+          'linear-gradient(115deg, #241811 0%, #3e2a20 34%, #6b4423 72%, #8a5a2e 100%)',
+      }}
+    >
+      {/* A soft glow so the gradient does not sit flat */}
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-[70vh]"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(70% 60% at 18% 0%, rgba(200,120,28,.10), transparent 62%), radial-gradient(50% 50% at 92% 12%, rgba(155,44,30,.07), transparent 60%)',
+            'radial-gradient(55% 55% at 88% 8%, rgba(200,120,28,.28), transparent 62%), radial-gradient(45% 45% at 8% 92%, rgba(0,0,0,.25), transparent 60%)',
         }}
         aria-hidden="true"
       />
 
       <Container className="relative grid items-center gap-14 py-20 sm:py-24 lg:grid-cols-12 lg:gap-16 lg:py-28">
-        <div className="lg:col-span-7">
-          <Reveal>
-            <p className="eyebrow flex items-center gap-3">
-              <span className="h-px w-8 bg-line-strong" aria-hidden="true" />
-              Est. {brand.established} · {hero.eyebrow}
-            </p>
-          </Reveal>
+        {/* Arch-framed product shot */}
+        <div className="relative lg:col-span-5 lg:order-1">
+          {/* Dot rail — slide indicators, GinTea-style vertical stack */}
+          <div className="absolute -left-2 top-1/2 z-10 hidden -translate-y-1/2 flex-col gap-3 sm:flex lg:-left-8">
+            {heroSlides.map((s, i) => (
+              <button
+                key={s.headline}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Show slide ${i + 1}: ${s.headline}`}
+                aria-current={i === index}
+                className={`h-2 w-2 rounded-full border border-paper/70 transition-all duration-300 ${
+                  i === index ? 'bg-paper' : 'bg-transparent hover:bg-paper/40'
+                }`}
+              />
+            ))}
+          </div>
 
-          <Reveal delay={80}>
-            <h1 className="mt-7 text-[clamp(2.75rem,7.5vw,5.5rem)] leading-[0.98] tracking-[-0.03em]">
-              {hero.headline}
-              <br />
-              <em className="font-display italic text-saffron">
-                {hero.headlineAccent}
-              </em>
-            </h1>
-          </Reveal>
+          <div
+            className="relative mx-auto aspect-[3/4] w-full max-w-[360px] overflow-hidden border border-paper/15 bg-clove/40"
+            style={{ borderRadius: '220px 220px 4px 4px' }}
+          >
+            {heroSlides.map((s, i) => (
+              <img
+                key={s.image}
+                src={s.image}
+                alt=""
+                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-out ${
+                  i === index ? 'opacity-100' : 'opacity-0'
+                }`}
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            ))}
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.4) 100%)' }}
+              aria-hidden="true"
+            />
+          </div>
 
-          <Reveal delay={160}>
-            <p className="mt-8 max-w-lg text-[1.0625rem] leading-relaxed text-ink-70 text-pretty">
-              {brand.promise}
-            </p>
-          </Reveal>
-
-          <Reveal delay={240}>
-            <div className="mt-10 flex flex-wrap items-center gap-3">
-              <Button href={waHref} target="_blank" rel="noopener noreferrer" variant="accent">
-                <WhatsAppIcon />
-                {hero.primaryCta}
-              </Button>
-              <Button href="#masalas" variant="ghost">
-                {hero.secondaryCta}
-                <ArrowIcon />
-              </Button>
-            </div>
-          </Reveal>
+          {/* Mobile dots, centered under the image */}
+          <div className="mt-5 flex justify-center gap-3 sm:hidden">
+            {heroSlides.map((s, i) => (
+              <button
+                key={s.headline}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Show slide ${i + 1}: ${s.headline}`}
+                aria-current={i === index}
+                className={`h-2 w-2 rounded-full border border-ink/50 transition-all duration-300 ${
+                  i === index ? 'bg-ink' : 'bg-transparent'
+                }`}
+              />
+            ))}
+          </div>
         </div>
 
-        {/* Spice shelf — three tones stacked, labelled like a specimen card */}
-        <Reveal delay={200} className="lg:col-span-5">
-          <div className="relative">
-            <div className="overflow-hidden rounded-[2px] border border-line">
-              {products.slice(0, 3).map((p, i) => (
-                <div
-                  key={p.name}
-                  className="group relative flex items-end overflow-hidden"
-                  style={{ height: i === 0 ? 248 : 136 }}
-                >
-                  {p.image ? (
-                    <img
-                      src={p.image}
-                      alt=""
-                      className="absolute inset-0 h-full w-full scale-100 object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                      loading={i === 0 ? 'eager' : 'lazy'}
-                    />
-                  ) : (
-                    <SpiceSwatch
-                      tone={p.tone}
-                      className="absolute inset-0 scale-100 transition-transform duration-700 ease-out group-hover:scale-110"
-                    />
-                  )}
-                  {/* Scrim so the label stays legible over a photo of any brightness */}
-                  <div
-                    className="absolute inset-0 transition-opacity duration-500 group-hover:opacity-80"
-                    style={{
-                      background:
-                        'linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,.55) 100%)',
-                    }}
-                    aria-hidden="true"
-                  />
-                  <div className="relative flex w-full items-baseline justify-between px-6 py-5 transition-transform duration-500 ease-out group-hover:-translate-y-1">
-                    <span className="font-display text-xl text-white/95">{p.name}</span>
-                    <span className="text-[0.6875rem] tracking-[0.14em] text-white/60">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="lg:col-span-7 lg:order-2">
+          <p className="eyebrow flex items-center gap-3 text-paper/60!">
+            <span className="h-px w-8 bg-paper/30" aria-hidden="true" />
+            Est. {brand.established} · {slide.eyebrow}
+          </p>
 
-            <p className="mt-4 text-[0.8125rem] leading-relaxed text-ink-45">
-              Ground the week it ships — never blended from pre-ground stock.
-            </p>
+          <h1 className="mt-7 min-h-[2.2em] text-[clamp(2.5rem,6.5vw,4.75rem)] leading-[0.98] tracking-[-0.03em] text-paper">
+            {slide.headline}
+            <br />
+            <em className="font-display italic text-saffron">{slide.headlineAccent}</em>
+          </h1>
+
+          <p className="mt-8 max-w-lg text-[1.0625rem] leading-relaxed text-paper/75 text-pretty">
+            {slide.body}
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center gap-3">
+            <Button
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-paper! text-ink! hover:bg-white! hover:brightness-100!"
+            >
+              <WhatsAppIcon />
+              Order on WhatsApp
+            </Button>
+            <Button href="#masalas" variant="ghost" className="border-paper/35! text-paper! hover:border-paper!">
+              See the masalas
+              <ArrowIcon />
+            </Button>
           </div>
-        </Reveal>
+        </div>
       </Container>
     </section>
   )

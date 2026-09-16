@@ -12,7 +12,7 @@ import { brand } from '../content/site'
  */
 const LOGO_SRC = '/logo.jpg'
 
-export default function Logo({ className = '', height = 34 }) {
+export default function Logo({ className = '', height = 34, light = false }) {
   const [failed, setFailed] = useState(false)
 
   return (
@@ -24,12 +24,14 @@ export default function Logo({ className = '', height = 34 }) {
           height={height}
           width={height}
           style={{ height, width: height }}
-          className="shrink-0 rounded-full object-cover ring-1 ring-line-strong/60"
+          className={`shrink-0 rounded-full object-cover ring-1 ${
+            light ? 'ring-paper/25' : 'ring-line-strong/60'
+          }`}
           onError={() => setFailed(true)}
         />
       )}
       <span
-        className="font-display leading-none text-ink"
+        className={`font-display leading-none ${light ? 'text-paper' : 'text-ink'}`}
         style={{ fontSize: height * 0.5, letterSpacing: '-0.015em' }}
       >
         {brand.name.replace('Masala', '')}
